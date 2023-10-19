@@ -1,11 +1,14 @@
-import 'dart:developer';
+// ignore_for_file: prefer_const_constructors, unnecessary_string_interpolations
 
+import 'dart:developer';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/material.dart';
 import 'package:hello_weather/api_key.dart';
 import 'package:hello_weather/service/weatherService.dart';
 import 'package:lottie/lottie.dart';
 
 import '../models/weatherModel.dart';
+import 'dart:io' show Platform;
 
 class WeatherHome extends StatefulWidget {
   const WeatherHome({super.key});
@@ -63,6 +66,25 @@ class _WeatherHomeState extends State<WeatherHome> {
     }
   }
 
+  Future<void> _launchURL() async {
+    final url = "https://github.com/gauransh18/helloWeather-Flutter.git";
+    final Uri uri = Uri(
+        scheme: 'https',
+        host: 'github.com',
+        path: '/gauransh18/helloWeather-Flutter.git');
+    if (Platform.isAndroid) {
+      if (!await launchUrl(uri, mode: LaunchMode.externalApplication)) {
+        throw 'Could not launch $url';
+      }
+    }
+    
+    if (await canLaunchUrl(Uri.parse(url))) {
+      await launchUrl(Uri.parse(url));
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -72,29 +94,57 @@ class _WeatherHomeState extends State<WeatherHome> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        backgroundColor: Color.fromARGB(255, 16, 16, 16),
         body: SafeArea(
-      child: Center(
-        child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              SizedBox(height: 50),
-              Text(_weather?.cityName ?? "loading city.."),
-              Spacer(),
-              Lottie.asset(
-                '${_getWeatherAnimation(_weather?.mainCondition, dayOrNight)}',
-              ),
-              Spacer(),
-              Text("${_weather?.temperature.round().toString()} °C",
-                  style: TextStyle(
-                    fontSize: 50,
-                    fontWeight: FontWeight.bold,
-                    
-                  )),
-              Text("${_weather?.mainCondition ?? "loading.."}"),
-              SizedBox(height: 50),
-            ]),
-      ),
-    ));
+          child: Center(
+            child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SizedBox(height: 50),
+                  Icon(
+                    Icons.location_on,
+                    color: Color.fromARGB(255, 134, 134, 134),
+                    size: 20,
+                  ),
+                  Text(_weather?.cityName.toUpperCase() ?? "loading city..",
+                      style: TextStyle(
+                        fontSize: 28,
+                        fontWeight: FontWeight.bold,
+                        color: Color.fromARGB(255, 134, 134, 134),
+                      )),
+                  Spacer(),
+                  Lottie.asset(
+                    '${_getWeatherAnimation(_weather?.mainCondition, dayOrNight)}',
+                  ),
+                  Text("${_weather?.mainCondition ?? "loading.."}",
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: const Color.fromARGB(255, 230, 230, 230),
+                      )),
+                  Spacer(),
+                  Text("${_weather?.temperature.round().toString()}°",
+                      style: TextStyle(
+                        fontSize: 50,
+                        fontWeight: FontWeight.bold,
+                        color: const Color.fromARGB(255, 230, 230, 230),
+                      )),
+                  SizedBox(height: 50),
+                  GestureDetector(
+                    onTap: () {
+                      _launchURL();
+                    },
+                    child: Text(
+                      'Visit our GitHub repository',
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                        color: Color.fromARGB(255, 121, 121, 121),
+                      ),
+                    ),
+                  )
+                ]),
+          ),
+        ));
   }
 }
