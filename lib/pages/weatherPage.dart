@@ -77,7 +77,7 @@ class _WeatherHomeState extends State<WeatherHome> {
         throw 'Could not launch $url';
       }
     }
-    
+
     if (await canLaunchUrl(Uri.parse(url))) {
       await launchUrl(Uri.parse(url));
     } else {
@@ -142,7 +142,9 @@ class _WeatherHomeState extends State<WeatherHome> {
                         color: Color.fromARGB(255, 121, 121, 121),
                       ),
                     ),
-                  )
+                  ),
+                  SizedBox(height: 10),
+                
                 ]),
           ),
         ));
