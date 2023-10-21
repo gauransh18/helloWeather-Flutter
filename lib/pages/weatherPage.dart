@@ -29,6 +29,7 @@ class _WeatherHomeState extends State<WeatherHome> {
     try {
       final weather = await _weatherService.getWeather(cityName);
       final don = await _weatherService.checkDayOrNight();
+      print(don);
       setState(() {
         _weather = weather;
         dayOrNight = don;
@@ -49,7 +50,9 @@ class _WeatherHomeState extends State<WeatherHome> {
   String _getWeatherAnimation(String? mainCondition, String dayOrNight) {
     if (mainCondition == null) return "assets/sun.json";
 
+    
     final isNight = dayOrNight.toLowerCase() == "night";
+    print(isNight);
     switch (mainCondition.toLowerCase()) {
       case 'clouds':
         return isNight ? "assets/cloudy-night.json" : "assets/cloudy-day.json";
@@ -64,6 +67,8 @@ class _WeatherHomeState extends State<WeatherHome> {
       case 'fog':
         return "assets/cloudy-butnot.json";
       case 'drizzle':
+        return "assets/cloudy-butnot.json";
+      case 'mist':
         return "assets/cloudy-butnot.json";
       case 'shower rain':
         return "assets/rainy.json";
@@ -115,6 +120,7 @@ class _WeatherHomeState extends State<WeatherHome> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
+
                     SizedBox(height: 5),
                     Row(
                       children: [
